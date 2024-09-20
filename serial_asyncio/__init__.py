@@ -465,7 +465,12 @@ async def open_stream_reader_and_writer(
     return reader, writer
 
 
-__all__ = ["open_stream_reader_and_writer"]
+__all__ = [
+    "open_stream_reader_and_writer",
+    "open_transport_and_protocol",
+    "Data",
+    "SerialTransport",
+]
 
 if __name__ == "__main__":
 
