@@ -1,0 +1,6 @@
+{
+  "typeCheckingMode": "strict",
+  "exclude": ["venv", "__pycache__"],
+  "extraPaths": ["./serial_asyncio/"],
+  "reportMissingTypeStubs": false
+}
