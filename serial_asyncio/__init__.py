@@ -20,6 +20,7 @@ import logging
 import os
 from typing import Optional, Tuple, Union
 import serial
+import threading
 
 __version__ = "0.6"
 
@@ -71,8 +72,8 @@ class SerialTransport(asyncio.Transport):
         self.serial.write_timeout = 0
 
         # These two callbacks will be enqueued in a FIFO queue by asyncio
-        loop.call_soon(protocol.connection_made, self)
-        loop.call_soon(self._ensure_reader)
+        loop.call_soon_threadsafe(protocol.connection_made, self)
+        loop.call_soon_threadsafe(self._ensure_reader)
 
     def close(self):
         """Close the transport gracefully.
@@ -299,7 +300,7 @@ class SerialTransport(asyncio.Transport):
 
         def _ensure_writer(self):
             if not self._has_writer and not self._closing:
-                self._has_writer = self.loop.call_soon(self._poll_write)
+                self._has_writer = self.loop.call_soon_threadsafe(self._poll_write)
 
         def _remove_writer(self):
             if self._has_writer:
@@ -504,10 +505,17 @@ if __name__ == "__main__":
             print("resume writing")
 
     loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+    asyncio.set_event_loop(loop)
+
     transport, protocol = open_transport_and_protocol(
         serial_instance=serial.Serial(baudrate=921600, port="/dev/ttyUSB0"),
         loop=loop,
         protocol=Output(),
     )
-    loop.run_forever()
+    threading.Thread(target=loop.run_forever, daemon=True).start()
+
+    import time
+
+    time.sleep(60)
     loop.close()
