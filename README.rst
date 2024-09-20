@@ -1,22 +1,21 @@
-========================================
- pyserial-asyncio |build-status| |docs|
-========================================
+Original Project Homepage: https://github.com/pyserial/pyserial-asyncio
 
-Async I/O extension package for the Python Serial Port Extension for OSX, Linux, BSD
+## Main differences in this fork
 
-It depends on pySerial and is compatible with Python 3.5 and later.
+- Explicit typing
 
-Documentation
-=============
+- Removed creating connections via URL. Instead, the originial pyserial Serial object must be created by user.
+I believe this is desirable because it preserves the type information for the user, otherwise this repo would have
+to basically copy paste all type or use some typing util I'm anaware of to achieve proper type hinting.
+Also, I was burnt by the original repo implicitly expecting arguments, so screw that.
 
-- Documentation: http://pyserial-asyncio.readthedocs.io/en/latest/
-- Download Page: https://pypi.python.org/pypi/pyserial-asyncio
-- Project Homepage: https://github.com/pyserial/pyserial-asyncio
+- Buffer is no longer stored as an array of bytearrays (lol), but just a bytearray.
 
+- `call_soon` was replaced with `call_soon_threadsafe`
 
-.. |build-status| image:: https://travis-ci.org/pyserial/pyserial-asyncio.svg?branch=master
-   :target: https://travis-ci.org/pyserial/pyserial-asyncio
-   :alt: Build status
-.. |docs| image:: https://readthedocs.org/projects/pyserial-asyncio/badge/?version=latest
-   :target: http://pyserial-asyncio.readthedocs.io/
-   :alt: Documentation
+- It's better because it follows by very objectively correct opinions. Sorry not sorry.
+
+## Info
+
+- Tested on Python 3.8.20 and 3.12.6 with pyserial==3.5 on both Ubuntu 24.04 and Windows 10
+- "Tested" doesn't really mean anything. It ran with a very basic example. YMMV.
