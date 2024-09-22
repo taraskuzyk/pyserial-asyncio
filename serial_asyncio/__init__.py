@@ -24,7 +24,6 @@ import threading
 
 __version__ = "0.6"
 
-os.name = "nt"
 
 Data = Union[bytes, bytearray, memoryview]
 
@@ -514,8 +513,7 @@ if __name__ == "__main__":
         protocol=Output(),
     )
     threading.Thread(target=loop.run_forever, daemon=True).start()
-
     import time
 
-    time.sleep(60)
-    loop.close()
+    time.sleep(3)
+    loop.stop()
