@@ -1,0 +1,16 @@
+[project]
+name = "tek-pyserial-asyncio"
+version = "0.7.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyserial>=3.5",
+]
+
+[[tool.uv.index]]
+name = "TEKTELIC"
+url = "http://sw01:9080/"
+publish-url = "http://sw01:9080/"
+
+

@@ -10,7 +10,7 @@
 """\
 Support asyncio with serial ports.
 
-Posix platforms only, Python 3.5+ only.
+Posix platforms only, Python 3.12+ only.
 
 Windows event loops can not wait for serial ports with the current
 implementation. It should be possible to get that working though.
@@ -19,10 +19,8 @@ import asyncio
 import logging
 import os
 from typing import Optional, Tuple, Union
-import serial
-import threading
 
-__version__ = "0.7"
+import serial
 
 
 Data = Union[bytes, bytearray, memoryview]
@@ -471,55 +469,3 @@ __all__ = [
     "Data",
     "SerialTransport",
 ]
-
-if __name__ == "__main__":
-
-    class Output(asyncio.Protocol):
-
-        def __init__(self):
-            super().__init__()
-            self._transport: Union[SerialTransport, None] = None
-
-        def connection_made(self, transport: SerialTransport):  # type: ignore
-            self._transport = transport
-            print("port opened", self._transport)
-            self._transport.serial.rts = False
-            self._transport.write(b"Hello, World!\n")
-
-        def data_received(self, data: Data):
-            assert self._transport, "Data received before transport was set"
-            print("data received", repr(data))
-
-        def connection_lost(self, exc: Optional[Exception]):
-            assert self._transport, "Data received before transport was set"
-            self._transport.loop.stop()
-
-        def pause_writing(self):
-            assert self._transport
-            print(self._transport.get_write_buffer_size())
-
-        def resume_writing(self):
-            assert self._transport
-            print(self._transport.get_write_buffer_size())
-            print("resume writing")
-
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-    asyncio.set_event_loop(loop)
-
-    transport, protocol = open_transport_and_protocol(
-        serial_instance=serial.Serial(baudrate=921600, port="/dev/ttyUSB0"),
-        loop=loop,
-        protocol=Output(),
-    )
-    thread = threading.Thread(target=loop.run_forever, daemon=True)
-    thread.start()
-    import time
-
-    time.sleep(3)
-    transport, protocol = open_transport_and_protocol(
-        serial_instance=serial.Serial(baudrate=921600, port="/dev/ttyUSB0"),
-        loop=loop,
-        protocol=Output(),
-    )
-    loop.stop()
