@@ -23,9 +23,6 @@ from typing import Optional, Tuple, Union
 import serial
 
 
-Data = Union[bytes, bytearray, memoryview]
-
-
 class SerialTransport(asyncio.Transport):
     """An asyncio transport model of a serial communication channel.
 
@@ -93,7 +90,7 @@ class SerialTransport(asyncio.Transport):
             if data:
                 self._protocol.data_received(data)
 
-    def write(self, data: Data):
+    def write(self, data: Union[bytes, bytearray, memoryview]):
         """Write some data to the transport.
 
         This method does not block; it buffers the data and arranges
@@ -466,6 +463,5 @@ async def open_stream_reader_and_writer(
 __all__ = [
     "open_stream_reader_and_writer",
     "open_transport_and_protocol",
-    "Data",
     "SerialTransport",
 ]
