@@ -3,7 +3,7 @@
 #
 # Implementation of asyncio support.
 #
-# This file is part of pySerial. https://github.com/pyserial/pyserial-asyncio
+# This file is part of pySerial. https://github.com/taraskuzyk/pyserial-asyncio
 # (C) 2015-2020 pySerial-team
 #
 # SPDX-License-Identifier:    BSD-3-Clause
@@ -22,7 +22,7 @@ from typing import Optional, Tuple, Union
 import serial
 import threading
 
-__version__ = "0.6"
+__version__ = "0.7"
 
 
 Data = Union[bytes, bytearray, memoryview]
@@ -512,8 +512,14 @@ if __name__ == "__main__":
         loop=loop,
         protocol=Output(),
     )
-    threading.Thread(target=loop.run_forever, daemon=True).start()
+    thread = threading.Thread(target=loop.run_forever, daemon=True)
+    thread.start()
     import time
 
     time.sleep(3)
+    transport, protocol = open_transport_and_protocol(
+        serial_instance=serial.Serial(baudrate=921600, port="/dev/ttyUSB0"),
+        loop=loop,
+        protocol=Output(),
+    )
     loop.stop()
